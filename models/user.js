@@ -1,36 +1,56 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const user = new.mongoose.Schema(
+const user = new Schema(
     {
 username: { 
     type: String,
-     required: true
+    unique: true,
+     required: true,
+     trim:true
     },
-// must be unique and trimmed
 email: { 
     type: String, 
-    required: true
+    unique: true,
+    required: true,
+    trim:true
 },
 thoughts: [
     {
-    type: Schema.Types.ObjectId, ref: 'Thought' 
+    type: Schema.Types.ObjectId,
+    ref: 'Thought' 
     }
 ],
 friends: [{
-    type:Schema.Types.ObjectId, ref:'User'
+    type:Schema.Types.ObjectId,
+    ref:'User'
 }]
-
-// must be unique and valid email
-});
+    },
+{
+toJson: {
+    virtuals: true,
+    getters: true,
+},
+id:false
+}
+    
+);
 // This virtual should return the Users friend
 user.virtual('friendCount').get(function () {
     return this.friends.length;
   });
   
 
-const User = mongoose.model('User', user);
+const User = model('User', user);
 
-// const handleError = (err) => console.error(err);
+// const handleError = (err) => console.error(err);d
+// User.create(
+//     {
+//       username: 'banana',
+//       email: 'banana@mail.com',
+     
+//     },
+//     // (err) => (err ? handleError(err) : console.log('Created new document'))
+//   );
 
-module.exports = User
+module.exports = User;
 
