@@ -1,6 +1,6 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model} = require('mongoose');
 
-const user = new Schema(
+const userSchema = new Schema(
     {
 username: { 
     type: String,
@@ -18,11 +18,11 @@ thoughts: [
     {
     type: Schema.Types.ObjectId,
     ref: 'Thought' 
-    }
+    },
 ],
 friends: [{
     type:Schema.Types.ObjectId,
-    ref:'User'
+    ref:'userSchema'
 }]
     },
 {
@@ -34,13 +34,13 @@ id:false
 }
     
 );
-// This virtual should return the Users friend
-user.virtual('friendCount').get(function () {
+// This virtual should return the Users friend count
+userSchema.virtual('friendCount').get(function () {
     return this.friends.length;
   });
   
 
-const User = model('User', user);
+const User = model('User', userSchema);
 
 // const handleError = (err) => console.error(err);d
 // User.create(

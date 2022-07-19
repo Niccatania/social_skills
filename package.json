@@ -22,6 +22,7 @@
   "homepage": "https://github.com/Niccatania/social_skills#readme",
   "dependencies": {
     "express": "^4.18.1",
-    "mongoose": "^6.4.1"
+    "mongoose": "^6.4.1",
+    "seed": "node utils/seed.js"
   }
 }

@@ -1,6 +1,7 @@
-const {Schema, model, Types} = require('mongoose');
+const {Schema, model} = require('mongoose');
+const reactionSchema = require('./reactionSchema')
 
-const thought = new Schema({
+const thoughtSchema = new Schema({
 
     thoughtText:{
     type: String,
@@ -8,28 +9,29 @@ const thought = new Schema({
      maxlength:280,
     required: true,
 },
-createdAt: { type: Date, default: Date.now },
+createdAt: { 
+    type: Date, 
+    default: Date.now },
 // add getter method to format
 username: {
     type: String,
-    required: true,
-    ref: 'User' 
+    required: false,
 },
-reactions:
-['reactionSchema'],
+reactions:[reactionSchema],
 
-}
-);
+//  virtuals: true,
 
-thought.virtual('reactionCount').get(function () {
+});
+
+thoughtSchema.virtual('reactionCount').get(function () {
     return this.reactions.length;
   });
 
+// });
 
 
 
-
-const Thought  = model('Thought', thought);
+const Thought  = model('Thought', thoughtSchema);
 
 
 // Thought.create(
@@ -38,8 +40,8 @@ const Thought  = model('Thought', thought);
 //       thoughtText: 'frfr',
      
 //     },
-    // (err) => (err ? handleError(err) : console.log('Created new document'))
+//     (err) => (err ? handleError(err) : console.log('Created new document'))
 //   );
 
 
-module.exports = Thought
+module.exports = Thought;

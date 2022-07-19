@@ -1,9 +1,7 @@
-const { User } = require('../models');
-
-
+const { User, Thought } = require('../models');
 
 module.exports = {
-  // Get all courses currently stored in our database
+  // Get all users currently stored in our database
   getAllUsers(req, res) {
     User.find()
       .then((users) => res.json(users))
@@ -16,10 +14,13 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
 
-
 // // Get a single user
 getSingleUser(req, res) {
   User.findOne({ _id: req.params.userId })
+  .populate([
+    {path:'thoughts', select: "-__v"},
+    // {path:'friends', select: "-__v"}
+  ])
     .select('-__v')
     .then(async (user) =>
       !user
@@ -39,59 +40,49 @@ getSingleUser(req, res) {
       .then((user) =>
         !user
           ? res.status(404).json({ message: 'No such user exists' })
-          : Course.findOneAndUpdate(
+          : user.findOneAndUpdate(
               { users: req.params.userId },
               { $pull: { users: req.params.userId } },
-              { new: true }
+              { new: true },
+              { message: 'User Deleted!' }
+
             )
+          
       )
       .catch((err) => {
         console.log(err);
         res.status(500).json(err);
       });
   },
+
+
+
 
   updateUser(req, res) {
-    User.findOneAndUpdate({ _id: req.params.userId })
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $set: req.body },
+      { runValidators: true, new: true }
+    )
       .then((user) =>
         !user
-          ? res.status(404).json({ message: 'No such user exists' })
-          : User.findOneAndUpdate(
-              { users: req.params.userId },
-              { $addToSet: { username: req.body } },
-              { runValidators: true, new: true }
-            )
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(user)
       )
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json(err);
-      });
+      .catch((err) => res.status(500).json(err));
   },
- 
 
-
-
-
-
-
+  addFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: params.friendId }  },
+      { runValidators: true, new: true }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Create seeds for user thought or if theres a way to add them directly, Why is the reaction schema only?

@@ -1,14 +1,17 @@
-// Reaction (SCHEMA ONLY)- to be used as the subdoc for reaction in the thought model
-const reactionSchema = new.mongoose.Schema({
+const {Schema, model, Types} = require('mongoose');
+
+
+const reactionSchema = new Schema({
 
    reactionId:{
-    type: {ObjectId},
-    default:new.ObjectId,
+       type: Schema.Types.ObjectId,
+    default:new Types.ObjectId,
     required: true,
 },
 reactionBody:
 {
-    type: {String, max:280,},
+    type: String, 
+        maxLength: 280,
     required:true
 },
 username: { 
@@ -16,6 +19,16 @@ username: {
      required: true
     },
     createdAt: { 
-        type: Date, default: Date.now 
+        type: Date, 
+        default: Date.now 
         // Add getter method to format timestamp
-    }});
+    }
+},
+    {
+        toJSON: {
+            getters: true
+        },
+        id: false
+    });
+    
+    module.exports = reactionSchema;
